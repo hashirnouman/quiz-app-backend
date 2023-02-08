@@ -19,7 +19,9 @@ exports.login = async (req, res) => {
   const user = await User.findOne({ username: req.body.username });
   const result = bcrypt.compareSync(req.body.password, user.password);
   if (result === true) {
-    const accessToken = jwt.sign(user.toJSON(), secretKey, { expiresIn: "24h" });
+    const accessToken = jwt.sign(user.toJSON(), secretKey, {
+      expiresIn: "24h",
+    });
     const refreshToken = jwt.sign(user.toJSON(), secretKey, {
       expiresIn: "7d",
     });
