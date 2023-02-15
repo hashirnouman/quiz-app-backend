@@ -3,14 +3,19 @@ const route = express.Router();
 const quizeController = require("./controllers/quizController");
 const userController = require("./controllers/userController");
 const jwt = require("jsonwebtoken");
-const secretKey = "sanjose*12";
+
 const authenticate = async (req, res, next) => {
-  const accessToken = req.headers.authorization;
-  try {
-    jwt.verify(accessToken, secretKey);
-    next();
-  } catch (err) {
-    res.status(401).send("Unauthorized");
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      const accessToken = req.headers.authorization.split(" ")[1];
+      jwt.verify(accessToken, process.env.TOKEN);
+      next();
+    } catch (e) {
+      res.status(403).send("Error");
+    }
   }
 };
 route.get("/", (req, res) => {

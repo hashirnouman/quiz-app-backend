@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const secretKey = "sanjose*12";
 const saltRounds = 10;
 
 exports.signup = async (req, res) => {
@@ -19,10 +18,10 @@ exports.login = async (req, res) => {
   const user = await User.findOne({ username: req.body.username });
   const result = bcrypt.compareSync(req.body.password, user.password);
   if (result === true) {
-    const accessToken = jwt.sign(user.toJSON(), secretKey, {
+    const accessToken = jwt.sign(user.toJSON(), process.env.TOKEN, {
       expiresIn: "24h",
     });
-    const refreshToken = jwt.sign(user.toJSON(), secretKey, {
+    const refreshToken = jwt.sign(user.toJSON(), process.env.TOKEN, {
       expiresIn: "7d",
     });
     res.status(200).send({
